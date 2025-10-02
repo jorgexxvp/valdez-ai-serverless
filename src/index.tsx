@@ -1,17 +1,7 @@
+import { authHandler, mediaAiHandler } from '@infrastructure/handlers';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { verify } from 'hono/jwt';
-import { authHandler } from './infrastructure/handlers/AuthHandler';
-import { mediaAiHandler } from './infrastructure/handlers/MediaAIHandler';
-import {
-  userHandler,
-  skillHandler,
-  blogHandler,
-  networkHandler,
-  trainingHandler,
-  experienceHandler,
-  roleHandler,
-} from './infrastructure/handlers';
 
 // PUBLIC ROUTES
 
@@ -29,8 +19,6 @@ publicApp.use(
 // AUTH
 
 publicApp.route('/v1', authHandler);
-
-publicApp.route('/v1', mediaAiHandler);
 
 // PRIVATE ROUTES
 
@@ -66,13 +54,7 @@ privateApp.use('*', async (c, next) => {
   }
 });
 
-privateApp.route('/v1/api', userHandler);
-privateApp.route('/v1/api', skillHandler);
-privateApp.route('/v1/api', blogHandler);
-privateApp.route('/v1/api', networkHandler);
-privateApp.route('/v1/api', trainingHandler);
-privateApp.route('/v1/api', experienceHandler);
-privateApp.route('/v1/api', roleHandler);
+privateApp.route('/v1/api', mediaAiHandler);
 
 // EXPORT
 const app = new Hono<{ Bindings: CloudflareBindings }>();

@@ -20,6 +20,7 @@ node_modules/
 .env.production
 .dev.vars
 wrangler.toml
+worker-configuration.d.ts
 
 # logs
 logs/
