@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AccessRole{
+  id            Int       @id @default(autoincrement())
+  name          String
+  Account       Account[]
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  deleted_at    DateTime?
+  @@map("tbl_access_role")
+}
+
+model Historial{
+  id          Int      @id @default(autoincrement())
+  user        Account     @relation(fields: [rol_id], references: [id])
+  rol_id      Int
+  action      String
+  message     String
+  created_at  DateTime @default(now())
+  @@map("tbl_historial")
+}
+
+model Account {
+  id          Int      @id @default(autoincrement())
+  name        String
+  password    String
+  rol         AccessRole    @relation(fields: [rol_id], references: [id])
+  rol_id      Int
+  historial   Historial[]
+  created_at  DateTime @default(now())
+  @@map("tbl_account")
+}
+
+
+
