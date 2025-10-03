@@ -81,6 +81,7 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
     withErrorHandling(async (c) => {
       const body = await getJsonBody<Record<string, unknown>>(c);
       const prompt = expectString(body, 'message', { nonEmpty: true });
+      const model = body.model;
       const key = generarNombreAleatorio(10) + '.jpg';
       const repo = new PrismaMediaAIRepository(
         c.env.DB,
@@ -88,14 +89,15 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
         c.env.AI,
       );
       const useCases = new MediaAIUseCases(repo);
-      const object: R2ObjectBody = await useCases.generateImage({
+      const object = await useCases.generateImage({
         prompt: prompt || '',
         imageKey: key,
+        model: (model as keyof AiModels) ?? '@cf/leonardo/phoenix-1.0',
       });
-      return new Response(object.body, {
+      return new Response(object?.body, {
         headers: {
           'content-type':
-            object.httpMetadata?.contentType || 'application/octet-stream',
+            object?.httpMetadata?.contentType || 'application/octet-stream',
         },
       });
     }),

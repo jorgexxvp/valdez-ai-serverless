@@ -41,11 +41,11 @@ export class PrismaMediaAIRepository implements IMediaAIRepository {
   async generateImage(
     data: MediaAIImageGeneration,
   ): Promise<R2ObjectBody | null> {
-    const aiResult = await this.ai.run('@cf/leonardo/phoenix-1.0', {
+    const aiResult = await this.ai.run(data.model, {
       prompt: data.prompt,
     });
     const key = data.imageKey;
-    await this.r2.put(key, aiResult);
+    await this.r2.put(key, String(aiResult));
     const result = this.r2.get(key);
 
     return result;

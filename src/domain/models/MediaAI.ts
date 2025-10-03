@@ -6,6 +6,7 @@ export interface MediaAIUpload {
 export interface MediaAIImageGeneration {
   prompt: string;
   imageKey: string;
+  model: keyof AiModels;
 }
 
 export interface MediaAIChat {
