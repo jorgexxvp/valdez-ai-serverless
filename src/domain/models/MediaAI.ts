@@ -11,5 +11,4 @@ export interface MediaAIImageGeneration {
 
 export interface MediaAIChat {
   message: string;
-  response: any;
 }
