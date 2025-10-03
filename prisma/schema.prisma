@@ -26,6 +26,7 @@ model Historial{
   rol_id      Int
   action      String
   message     String
+  response    String
   created_at  DateTime @default(now())
   @@map("tbl_historial")
 }

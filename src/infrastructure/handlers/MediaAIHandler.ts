@@ -25,7 +25,7 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
       }
       const key = file.name;
       const repo = new PrismaMediaAIRepository(
-        c.env,
+        c.env.DB,
         c.env.R2_BUCKET,
         c.env.AI,
       );
@@ -43,7 +43,7 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
     withErrorHandling(async (c) => {
       const key = 'My Resume (2).pdf';
       const repo = new PrismaMediaAIRepository(
-        c.env,
+        c.env.DB,
         c.env.R2_BUCKET,
         c.env.AI,
       );
@@ -64,7 +64,7 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
       const body = await getJsonBody<Record<string, unknown>>(c);
       const message = expectString(body, 'message', { nonEmpty: true });
       const repo = new PrismaMediaAIRepository(
-        c.env,
+        c.env.DB,
         c.env.R2_BUCKET,
         c.env.AI,
       );
@@ -83,18 +83,19 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
       const prompt = expectString(body, 'message', { nonEmpty: true });
       const key = generarNombreAleatorio(10) + '.jpg';
       const repo = new PrismaMediaAIRepository(
-        c.env,
+        c.env.DB,
         c.env.R2_BUCKET,
         c.env.AI,
       );
       const useCases = new MediaAIUseCases(repo);
-      const object = await useCases.generateImage({
+      const object: R2ObjectBody = await useCases.generateImage({
         prompt: prompt || '',
         imageKey: key,
       });
-      return new Response(object, {
+      return new Response(object.body, {
         headers: {
-          'content-type': 'image/jpeg',
+          'content-type':
+            object.httpMetadata?.contentType || 'application/octet-stream',
         },
       });
     }),

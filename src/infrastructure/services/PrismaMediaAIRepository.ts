@@ -4,8 +4,8 @@ import {
   MediaAIImageGeneration,
 } from '@domain/models';
 import { IMediaAIRepository } from '@domain/repositories';
+import { PrismaClient } from '@prisma/client';
 import { PrismaD1 } from '@prisma/adapter-d1';
-import { PrismaClient } from '@prisma/client/extension';
 
 export class PrismaMediaAIRepository implements IMediaAIRepository {
   private prisma: PrismaClient;
@@ -38,12 +38,16 @@ export class PrismaMediaAIRepository implements IMediaAIRepository {
     return await this.ai.run('@cf/openchat/openchat-3.5-0106', { messages });
   }
 
-  async generateImage(data: MediaAIImageGeneration): Promise<Blob> {
+  async generateImage(
+    data: MediaAIImageGeneration,
+  ): Promise<R2ObjectBody | null> {
     const aiResult = await this.ai.run('@cf/leonardo/phoenix-1.0', {
       prompt: data.prompt,
     });
     const key = data.imageKey;
     await this.r2.put(key, aiResult);
-    return (await this.r2.get(key)) as any;
+    const result = this.r2.get(key);
+
+    return result;
   }
 }

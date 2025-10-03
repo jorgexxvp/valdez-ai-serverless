@@ -1,9 +1,9 @@
-import { PrismaD1 } from '@prisma/adapter-d1';
 import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
-import { PrismaClient } from '@prisma/client/extension';
 import { AuthLogin, AuthResult, AuthRegister } from '@domain/models/Auth';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
+import { PrismaClient } from '@prisma/client';
+import { PrismaD1 } from '@prisma/adapter-d1';
 
 export class PrismaAuthRepository implements IAuthRepository {
   private prisma: PrismaClient;
@@ -18,7 +18,18 @@ export class PrismaAuthRepository implements IAuthRepository {
     const secretKey = new TextEncoder().encode(this.secret);
     const account = await this.prisma.account.findFirst({
       where: { name: data.name },
-      include: { rol: true },
+      select: {
+        id: true,
+        name: true,
+        password: true,
+        rol_id: true,
+        rol: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
     if (!account) return { success: false, message: 'Usuario no encontrado' };
     const passwordMatches = await bcrypt.compare(
@@ -45,6 +56,7 @@ export class PrismaAuthRepository implements IAuthRepository {
   async register(data: AuthRegister): Promise<AuthResult> {
     const exists = await this.prisma.account.findFirst({
       where: { name: data.name },
+      select: { id: true },
     });
     if (exists) return { success: false, message: 'El usuario ya existe' };
     const hashed = await bcrypt.hash(data.password, 10);
@@ -64,7 +76,16 @@ export class PrismaAuthRepository implements IAuthRepository {
       });
       const account = await this.prisma.account.findUnique({
         where: { id: payload.userId as number },
-        include: { rol: true },
+        select: {
+          id: true,
+          name: true,
+          rol: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
       });
       if (!account) return { success: false, message: 'Usuario no encontrado' };
       const newToken = await new SignJWT({
