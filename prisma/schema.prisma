@@ -27,6 +27,7 @@ model Historial{
   action      String
   message     String
   response    String
+  chat_num    String
   created_at  DateTime @default(now())
   @@map("tbl_historial")
 }

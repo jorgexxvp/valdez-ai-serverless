@@ -14,6 +14,7 @@ CREATE TABLE "tbl_historial" (
     "action" TEXT NOT NULL,
     "message" TEXT NOT NULL,
     "response" TEXT NOT NULL,
+    "chat_num" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "tbl_historial_rol_id_fkey" FOREIGN KEY ("rol_id") REFERENCES "tbl_account" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

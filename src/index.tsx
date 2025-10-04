@@ -2,6 +2,7 @@ import { authHandler, mediaAiHandler } from '@infrastructure/handlers';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { verify } from 'hono/jwt';
+export { ChatSession } from './infrastructure/durable-objects/ChatSession';
 
 // PUBLIC ROUTES
 

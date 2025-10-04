@@ -50,7 +50,6 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
       const useCases = new MediaAIUseCases(repo);
       const obj = await useCases.getFile(key);
       if (!obj) throw new AppError('NOT_FOUND', 'Archivo no encontrado');
-      // Blob does not have httpMetadata or httpEtag, so we just return the blob as a file
       return new Response(obj, {
         headers: {
           'content-type': 'application/pdf',
@@ -73,6 +72,17 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
         message: message || '',
       });
       return c.json({ success: true, data: response });
+    }),
+  )
+  .get(
+    '/chat-ws',
+    withErrorHandling(async (c) => {
+      const sessionId = c.req.query('session') || crypto.randomUUID();
+
+      const id = c.env.CHAT_SESSION.idFromName(sessionId);
+      const stub = c.env.CHAT_SESSION.get(id);
+
+      return stub.fetch(c.req.raw);
     }),
   )
   .post(
