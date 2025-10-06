@@ -10,5 +10,6 @@ export interface MediaAIImageGeneration {
 }
 
 export interface MediaAIChat {
+  maxsToken: number;
   message: string;
 }

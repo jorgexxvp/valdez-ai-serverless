@@ -70,7 +70,9 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
       const useCases = new MediaAIUseCases(repo);
       const response = await useCases.chatWithAI({
         message: message || '',
+        maxsToken: 2048,
       });
+
       return c.json({ success: true, data: response });
     }),
   )
