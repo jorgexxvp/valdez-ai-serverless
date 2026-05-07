@@ -105,11 +105,12 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
         imageKey: key,
         model: (model as keyof AiModels) ?? '@cf/leonardo/phoenix-1.0',
       });
-      return new Response(object?.body, {
-        headers: {
-          'content-type':
-            object?.httpMetadata?.contentType || 'application/octet-stream',
-        },
+
+      return c.json({
+        success: true,
+        message: 'Imagen generada',
+        key,
+        image: c.env.URL_R2 + '/' + key,
       });
     }),
   );

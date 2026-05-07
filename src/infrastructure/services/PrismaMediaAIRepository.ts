@@ -37,20 +37,20 @@ export class PrismaMediaAIRepository implements IMediaAIRepository {
     ];
     return await this.ai.run(
       '@cf/meta/llama-3.1-8b-instruct' as keyof AiModels,
-      { messages, max_tokens: data.max_tokens },
+      { messages, max_tokens: data.maxsToken },
     );
   }
 
-  async generateImage(
-    data: MediaAIImageGeneration,
-  ): Promise<R2ObjectBody | null> {
+  async generateImage(data: MediaAIImageGeneration): Promise<void> {
     const aiResult = await this.ai.run(data.model, {
       prompt: data.prompt,
     });
     const key = data.imageKey;
-    await this.r2.put(key, String(aiResult));
-    const result = this.r2.get(key);
 
-    return result;
+    await this.r2.put(key, aiResult as AiTextToImageOutput, {
+      httpMetadata: {
+        contentType: 'image/png',
+      },
+    });
   }
 }
