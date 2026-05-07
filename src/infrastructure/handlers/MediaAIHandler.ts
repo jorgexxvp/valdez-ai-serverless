@@ -107,10 +107,12 @@ export const mediaAiHandler = new Hono<{ Bindings: CloudflareBindings }>()
       });
 
       return c.json({
+        response: {
+          message: 'Imagen generada',
+          key,
+          image: c.env.URL_R2 + '/' + key,
+        },
         success: true,
-        message: 'Imagen generada',
-        key,
-        image: c.env.URL_R2 + '/' + key,
       });
     }),
   );
