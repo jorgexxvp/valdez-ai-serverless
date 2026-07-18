@@ -32,8 +32,9 @@ export const authHandler = new Hono<{ Bindings: CloudflareBindings }>()
       const body = await getJsonBody<Record<string, unknown>>(c);
       const name = expectString(body, 'name', { nonEmpty: true });
       const password = expectString(body, 'password', { nonEmpty: true });
-      const rolRaw = body['rol'];
-      const rolId = typeof rolRaw === 'number' ? rolRaw : undefined;
+      const rolRaw = body['rolId'] ?? body['rol'] ?? body['rol_id'];
+      const parsedRol = typeof rolRaw === 'number' ? rolRaw : (typeof rolRaw === 'string' ? parseInt(rolRaw, 10) : 2);
+      const rolId = Number.isNaN(parsedRol) ? 2 : parsedRol;
       const repo = new PrismaAuthRepository(c.env.DB, c.env.JWT_AUTH);
       const useCases = new AuthUseCases(repo);
       const result = await useCases.register({

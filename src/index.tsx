@@ -37,14 +37,14 @@ privateApp.use(
 privateApp.use('*', async (c, next) => {
   const authHeader = c.req.header('Authorization');
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader?.startsWith('Bearer ')) {
     return c.json({ success: false, message: 'Sin autorizacion' }, 401);
   }
 
   const token = authHeader.replace('Bearer ', '');
 
   try {
-    const decoded = await verify(token, c.env.JWT_AUTH);
+    const decoded = await verify(token, c.env.JWT_AUTH, 'HS256');
     c.set('jwtPayload', decoded);
     await next();
   } catch (err) {

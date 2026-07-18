@@ -1,8 +1,9 @@
 {
   "name": "portafolio-serverless",
   "scripts": {
-    "dev": "wrangler dev --remote",
-    "deploy": "wrangler deploy --minify",
+    "dev": "prisma generate && wrangler dev --remote",
+    "deploy": "prisma generate && wrangler deploy --minify",
+    "prisma:generate": "prisma generate",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings",
     "studio": "prisma studio",
     "generate": "wrangler d1 migrations create valdez-ai create_table",

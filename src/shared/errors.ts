@@ -80,6 +80,7 @@ export const withErrorHandling = <R>(
     try {
       return await handler(c);
     } catch (err) {
+      console.error('[Unhandled Request Error]:', err);
       const body = toErrorResponse(err);
       const status = (
         err instanceof AppError ? err.status : 500

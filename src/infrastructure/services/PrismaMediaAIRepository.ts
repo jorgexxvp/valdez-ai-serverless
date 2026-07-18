@@ -36,7 +36,7 @@ export class PrismaMediaAIRepository implements IMediaAIRepository {
       { role: 'user', content: data.message },
     ];
     return await this.ai.run(
-      '@cf/meta/llama-3.1-8b-instruct' as keyof AiModels,
+      '@cf/meta/llama-3.1-8b-instruct-fp8' as keyof AiModels,
       { messages, max_tokens: data.maxsToken },
     );
   }
